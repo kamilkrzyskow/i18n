@@ -431,18 +431,20 @@ class I18n(BasePlugin):
         When this happens, we favor the default language location if its
         content is the same as its /language counterpart.
         """
+        attribute_name = "_entries" if hasattr(search_plugin.search_index, "_entries") else "entries"
+        search_index_entries = getattr(search_plugin.search_index, attribute_name)
         default_lang_entries = filter(
             lambda x: not x["location"].startswith(
                 tuple(self.config["languages"].keys())
             ),
-            search_plugin.search_index._entries,
+            search_index_entries,
         )
         target_lang_entries = list(
             filter(
                 lambda x: x["location"].startswith(
                     tuple(self.config["languages"].keys())
                 ),
-                search_plugin.search_index._entries,
+                search_index_entries,
             )
         )
         for default_lang_entry in default_lang_entries:
@@ -453,12 +455,12 @@ class I18n(BasePlugin):
                 target_lang_entries,
             )
             for duplicated_entry in duplicated_entries:
-                if duplicated_entry in search_plugin.search_index._entries:
+                if duplicated_entry in search_index_entries:
                     log.debug(
                         f"removed duplicated search entry: {duplicated_entry['title']} "
                         f"{duplicated_entry['location']}"
                     )
-                    search_plugin.search_index._entries.remove(duplicated_entry)
+                    search_index_entries.remove(duplicated_entry)
 
     def on_page_markdown(self, markdown, page, config, files):
         """
@@ -543,7 +545,7 @@ class I18n(BasePlugin):
 
         dirty = False
         minify_plugin = config["plugins"].get("minify")
-        search_plugin = config["plugins"].get("search")
+        search_plugin = config["plugins"].get("search") or config["plugins"].get("material/search")
         with_pdf_plugin = config["plugins"].get("with-pdf")
         if with_pdf_plugin:
             with_pdf_plugin.on_post_build(config)
@@ -599,4 +601,4 @@ class I18n(BasePlugin):
         # Update the search plugin index with language pages
         if search_plugin:
             self._fix_search_duplicates(search_plugin)
-            search_plugin.on_post_build(config)
+            search_plugin.on_post_build(config=config)
