@@ -70,6 +70,7 @@ class I18n(BasePlugin):
         ("languages", Locale(dict, required=True)),
         ("material_alternate", Type(bool, default=True, required=False)),
         ("nav_translations", Type(dict, default={}, required=False)),
+        ("redirects_recreate", Type(bool, default=True, required=False)),
         ("search_reconfigure", Type(bool, default=True, required=False)),
     )
 
@@ -562,6 +563,7 @@ class I18n(BasePlugin):
         minify_plugin = config["plugins"].get("minify")
         search_plugin = config["plugins"].get("search") or config["plugins"].get("material/search")
         with_pdf_plugin = config["plugins"].get("with-pdf")
+        redirects_plugin = config["plugins"].get("redirects")
         if with_pdf_plugin:
             with_pdf_plugin.on_post_build(config)
             with_pdf_output_path = with_pdf_plugin.config["output_path"]
@@ -617,3 +619,58 @@ class I18n(BasePlugin):
         if search_plugin:
             self._fix_search_duplicates(search_plugin)
             search_plugin.on_post_build(config=config)
+
+        # Recreate each redirect mapping for every built language
+        if redirects_plugin and self.config["redirects_recreate"]:
+            try:
+                # noinspection PyUnresolvedReferences
+                from mkdocs_redirects import plugin as module
+            except (ImportError, ModuleNotFoundError):
+                log.warning("redirects plugin could not be imported")
+            else:
+                self._recreate_redirects(config=config, plugin=redirects_plugin, module=module)
+
+    def _recreate_redirects(self, *, config, module, plugin):
+        """
+        Recreate redirects for all internal pages for every built language.
+
+        This is a modified version of the `module.on_post_build` function
+        https://github.com/mkdocs/mkdocs-redirects/blob/b7a3353887c10347bb784d0b3dab2271e1207bae/mkdocs_redirects/plugin.py#L93
+        """
+
+        if "redirect_maps" not in plugin.config or not plugin.config["redirect_maps"]:
+            return
+
+        redirects = plugin.redirects
+        # Determine if 'use_directory_urls' is set
+        use_directory_urls = config.get('use_directory_urls')
+
+        for lang in filter(lambda l: l["build"], self.config["languages"].values()):
+
+            # Walk through the redirect map and write their HTML files
+            for page_old, page_new in redirects.items():
+                # Need to remove hash fragment from new page to verify existence
+                page_new_without_hash, hash_part = module._split_hash_fragment(str(page_new))
+                page_old_i18n = lang["link"] + page_old
+
+                # External redirect targets are easy, just use it as the target path
+                if page_new.lower().startswith(("http://", "https://")):
+                    dest_path = page_new
+
+                elif page_new_without_hash in plugin.doc_pages:
+                    file = plugin.doc_pages[page_new_without_hash]
+                    page_new_i18n = lang["link"] + file.url + hash_part
+                    dest_path = module.get_relative_html_path(page_old_i18n, page_new_i18n, use_directory_urls)
+
+                # If the redirect target isn't external or a valid internal page, throw an error
+                # Note: we use 'warn' here specifically; mkdocs treats warnings specially when in strict mode
+                else:
+                    log.warning("Redirect target '%s' does not exist!", page_new)
+                    continue
+
+                # DO IT!
+                module.write_html(
+                    config['site_dir'],
+                    module.get_html_path(page_old_i18n, use_directory_urls),
+                    dest_path,
+                )
