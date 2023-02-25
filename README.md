@@ -142,6 +142,14 @@ nav_translations:
     Topic2: Sujet2
 ```
 
+### redirects_recreate
+
+- default: `true`
+
+This is a **boolean** (true/false) option that handles the [`mkdocs-redirects`](https://github.com/mkdocs/mkdocs-redirects) plugin,
+it copies every `redirect_maps` entry to all the alternate *built* languages. It is expected that the entries were 
+written for the base path without any language suffix.
+
 ### search_reconfigure
 
 - default: `true`
