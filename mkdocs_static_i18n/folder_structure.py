@@ -326,9 +326,12 @@ def on_files(self, files, config):
 
 def on_nav(self, nav, config, files):
     """ """
+    default_nav_translated = False
+
     # translate default nav, see #113
     if self._maybe_translate_titles(self.default_language, nav):
         log.info(f"Translated default navigation to {self.default_language}")
+        default_nav_translated = True
 
     # check if the navigation is manually configured, see #145
     manual_nav = config.get("nav") is not None
@@ -376,7 +379,7 @@ def on_nav(self, nav, config, files):
                 files=self.i18n_files[language],
             )
 
-        if self.config["nav_translations"].get(language, {}):
+        if self.config["nav_translations"].get(language, {}) or default_nav_translated:
             if self._maybe_translate_titles(language, self.i18n_navs[language]):
                 log.info(f"Translated navigation to {language}")
 
