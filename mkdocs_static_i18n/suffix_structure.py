@@ -383,6 +383,10 @@ def on_nav(self, nav, config, files):
             self.i18n_files[language], self.i18n_configs[language]
         )
 
+        if self.config["nav_translations"].get(language, {}) or default_nav_translated:
+            if self._maybe_translate_titles(language, self.i18n_navs[language]):
+                log.info(f"Translated navigation to {language}")
+
         # If awesome-pages is used, we want to use it to structurate our
         # localized navigations as well
         if "awesome-pages" in config["plugins"]:
@@ -391,10 +395,6 @@ def on_nav(self, nav, config, files):
                 config=self.i18n_configs[language],
                 files=self.i18n_files[language],
             )
-
-        if self.config["nav_translations"].get(language, {}) or default_nav_translated:
-            if self._maybe_translate_titles(language, self.i18n_navs[language]):
-                log.info(f"Translated navigation to {language}")
 
         # detect and set nav homepage
         for page in self.i18n_files[language].documentation_pages():
