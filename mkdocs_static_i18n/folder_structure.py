@@ -358,9 +358,12 @@ def on_files(self, files, config):
 
 def on_nav(self, nav, config, files):
     """ """
+    default_nav_translated = False
+
     # translate default nav, see #113
     if self._maybe_translate_titles(self.default_language, nav):
         log.info(f"Translated default navigation to {self.default_language}")
+        default_nav_translated = True
 
     # check if the navigation is manually configured, see #145
     manual_nav = config.get("nav") is not None
@@ -399,6 +402,10 @@ def on_nav(self, nav, config, files):
             else:
                 raise Exception(f"could not find homepage Page(url='{expected_url}')")
 
+        if self.config["nav_translations"].get(language, {}) or default_nav_translated:
+            if self._maybe_translate_titles(language, self.i18n_navs[language]):
+                log.info(f"Translated navigation to {language}")
+
         # If awesome-pages is used, we want to use it to structurate our
         # localized navigations as well
         if "awesome-pages" in config["plugins"]:
@@ -407,10 +414,6 @@ def on_nav(self, nav, config, files):
                 config=self.i18n_configs[language],
                 files=self.i18n_files[language],
             )
-
-        if self.config["nav_translations"].get(language, {}):
-            if self._maybe_translate_titles(language, self.i18n_navs[language]):
-                log.info(f"Translated navigation to {language}")
 
         if language == self.default_language:
             for section in nav.items:

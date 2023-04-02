@@ -370,6 +370,11 @@ class I18n(BasePlugin):
     def _maybe_translate_titles(self, language, items):
         translated = False
         translated_nav = self.config["nav_translations"].get(language, {})
+        default_translation = self.config["nav_translations"].get(self.default_language, {})
+        if default_translation:
+            for k, v in default_translation.items():
+                if k not in translated_nav:
+                    translated_nav[k] = v
         if translated_nav:
             for item in items:
                 if hasattr(item, "title") and item.title in translated_nav:
@@ -478,7 +483,10 @@ class I18n(BasePlugin):
         discovered and we just have to translate if it needed.
         """
         page.locale = page.file.dest_language or self.default_language
-        if self.config["nav_translations"].get(page.locale, {}):
+        if (
+            self.config["nav_translations"].get(page.locale, {})
+            or self.config["nav_translations"].get(self.default_language, {})
+        ):
             self._maybe_translate_titles(page.locale, [page])
         return markdown
 
