@@ -13,7 +13,8 @@ from mkdocs_static_i18n import suffix
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
 
 try:
-    from importlib.metadata import files as package_files, version
+    from importlib.metadata import files as package_files
+    from importlib.metadata import version
 
     material_version = version("mkdocs-material")
     material_languages = [
@@ -103,7 +104,7 @@ class I18n(ExtendedPlugin):
                 i18n_nav.homepage = "/"
 
             # report missing homepage
-            if i18n_nav.homepage is None: # and self.current_language != self.default_language
+            if i18n_nav.homepage is None:  # and self.current_language != self.default_language
                 log.warning(f"Could not find a homepage for locale '{self.current_language}'")
 
         # manually trigger with-pdf, see #110
