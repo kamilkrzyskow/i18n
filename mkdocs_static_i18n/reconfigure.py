@@ -6,6 +6,7 @@ from mkdocs import localization
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.nav import Navigation
+from mkdocs.structure.pages import Page
 from mkdocs.theme import Theme
 
 from mkdocs_static_i18n import __file__ as installation_path
@@ -256,7 +257,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                 self.reconfigure_navigation(item.children, config, files, nav_helper)
 
             # is that the localized content homepage?
-            if nav_helper.homepage is None and hasattr(item, "url") and item.url:
+            if nav_helper.homepage is None and isinstance(item, Page) and item.url:
                 if config.use_directory_urls is True:
                     expected_homepage_urls = [
                         f"{self.current_language}/",

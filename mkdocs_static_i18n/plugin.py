@@ -96,16 +96,11 @@ class I18n(ExtendedPlugin):
                 f"{'s' if NavHelper.translated_items > 1 else ''} to '{self.current_language}'"
             )
 
-        if hasattr(i18n_nav, "homepage"):
+        # report missing homepage
+        if i18n_nav.homepage is None and NavHelper.homepage is None:
+            log.warning(f"Could not find a homepage for locale '{self.current_language}'")
+        elif i18n_nav.homepage is None:
             i18n_nav.homepage = NavHelper.homepage
-
-            # assure presence of homepage
-            if self.current_language == self.default_language:
-                i18n_nav.homepage = "/"
-
-            # report missing homepage
-            if i18n_nav.homepage is None:  # and self.current_language != self.default_language
-                log.warning(f"Could not find a homepage for locale '{self.current_language}'")
 
         # manually trigger with-pdf, see #110
         with_pdf_plugin = config["plugins"].get("with-pdf")
