@@ -54,7 +54,10 @@ def reconfigure_file(
     else:
         file.dest_path = file_dest_path
     file.abs_dest_path = os.path.normpath(os.path.join(config.site_dir, file.dest_path))
-    file.name = Path(file_dest_path).stem
+
+    # assure a valid name for the Page.is_index check
+    if file.name.startswith(("index", "README")):
+        file.name = "index"
 
     # update the url in case we played with the folder structure
     file.url = file._get_url(config.use_directory_urls)
