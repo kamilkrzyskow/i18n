@@ -1,11 +1,13 @@
 import logging
 from pathlib import PurePath
+from typing import Optional
 
 from jinja2.ext import loopcontrols
 from mkdocs import plugins
 from mkdocs.commands.build import build
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import Files
+from mkdocs.structure.pages import Page
 
 from mkdocs_static_i18n import suffix
 from mkdocs_static_i18n.reconfigure import ExtendedPlugin
@@ -80,16 +82,29 @@ class I18n(ExtendedPlugin):
         """
 
         # maybe move to another file and don't pass it as parameter?
-        class TranslationCounter:
+        class NavHelper:
             translated_items: int = 0
+            homepage: Optional[Page] = None
 
-        i18n_nav = self.reconfigure_navigation(nav, config, files, TranslationCounter)
+        i18n_nav = self.reconfigure_navigation(nav, config, files, NavHelper)
 
-        if TranslationCounter.translated_items:
+        # report translated entries
+        if NavHelper.translated_items:
             log.info(
-                f"Translated {TranslationCounter.translated_items} navigation element"
-                f"{'s' if TranslationCounter.translated_items > 1 else ''} to '{self.current_language}'"
+                f"Translated {NavHelper.translated_items} navigation element"
+                f"{'s' if NavHelper.translated_items > 1 else ''} to '{self.current_language}'"
             )
+
+        if hasattr(i18n_nav, "homepage"):
+            i18n_nav.homepage = NavHelper.homepage
+
+            # assure presence of homepage
+            if self.current_language == self.default_language:
+                i18n_nav.homepage = "/"
+
+            # report missing homepage
+            if i18n_nav.homepage is None: # and self.current_language != self.default_language
+                log.warning(f"Could not find a homepage for locale '{self.current_language}'")
 
         # manually trigger with-pdf, see #110
         with_pdf_plugin = config["plugins"].get("with-pdf")

@@ -244,7 +244,7 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         return config
 
     def reconfigure_navigation(
-        self, nav: Navigation, config: MkDocsConfig, files: I18nFiles, counter
+        self, nav: Navigation, config: MkDocsConfig, files: I18nFiles, nav_helper
     ):
         """
         Apply static navigation items translation mapping for the current language.
@@ -257,17 +257,13 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         for item in nav:
             if hasattr(item, "title") and item.title in nav_translations:
                 item.title = nav_translations[item.title]
-                counter.translated_items += 1
+                nav_helper.translated_items += 1
             # translation should be recursive to children
             if hasattr(item, "children") and item.children:
-                self.reconfigure_navigation(item.children, config, files, counter)
+                self.reconfigure_navigation(item.children, config, files, nav_helper)
+
             # is that the localized content homepage?
-            if (
-                hasattr(nav, "homepage")
-                and nav.homepage is None
-                and hasattr(item, "url")
-                and item.url
-            ):
+            if nav_helper.homepage is None and hasattr(item, "url") and item.url:
                 if config.use_directory_urls is True:
                     expected_homepage_urls = [
                         f"{self.current_language}/",
@@ -279,11 +275,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                         f"/{self.current_language}/index.html",
                     ]
                 if item.url in expected_homepage_urls:
-                    nav.homepage = item
+                    nav_helper.homepage = item
 
-        # report missing homepage
-        if hasattr(nav, "homepage") and nav.homepage is None:
-            log.warning(f"Could not find a homepage for locale '{self.current_language}'")
         return nav
 
     def reconfigure_page_context(self, context, page, config: MkDocsConfig, nav: Navigation):
