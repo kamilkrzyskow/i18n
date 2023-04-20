@@ -15,11 +15,11 @@ from mkdocs_static_i18n.config import I18nPluginConfig
 log = logging.getLogger("mkdocs.plugins." + __name__)
 
 try:
-    from importlib.metadata import files
+    from importlib.metadata import files as package_files
 
     LUNR_LANGUAGES = [
         PurePath(lang.stem).suffix.replace(".", "")
-        for lang in files("mkdocs")
+        for lang in package_files("mkdocs")
         if "mkdocs/contrib/search/lunr-language/lunr." in lang.as_posix() and len(lang.stem) == 7
     ]
     assert len(LUNR_LANGUAGES) > 1
