@@ -5,6 +5,7 @@ from typing import Optional
 from jinja2.ext import loopcontrols
 from mkdocs import plugins
 from mkdocs.commands.build import DuplicateFilter, build
+from mkdocs.config import load_config
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import Files
 from mkdocs.structure.pages import Page
@@ -193,19 +194,34 @@ class I18n(ExtendedPlugin):
             if locale == self.current_language:
                 continue
             self.current_language = locale
-            log.info(f"Building '{locale}' documentation to directory: {config.site_dir}")
+
             # TODO: reconfigure config here? skip on_config?
-            build(config)
+            # create a new internal config for additional languages
+            internal_config = load_config(config.config_file_path)
+
+            # remove the initially created I18n events
+            # required to avoid running 2 instances of the plugin
+            for event_group in internal_config.plugins.events.values():
+                for event in event_group:
+                    if event.__self__.__class__ is self.__class__:
+                        event_group.remove(event)
+                        break
+
+            # reassign the plugin, the events will be registered again
+            internal_config.plugins["i18n"] = config.plugins["i18n"]
+
+            log.info(f"Building '{locale}' documentation to directory: {internal_config.site_dir}")
+            build(internal_config)
 
             # manually trigger with-pdf for this locale, see #110
             if with_pdf_plugin:
                 with_pdf_plugin.config["output_path"] = PurePath(
                     f"{locale}/{with_pdf_output_path}"
                 ).as_posix()
-                with_pdf_plugin.on_post_build(config)
+                with_pdf_plugin.on_post_build(internal_config)
 
         # rebuild and deduplicate the search index
-        self.reconfigure_search_index(config)
+        # self.reconfigure_search_index(config)
 
         # remove monkey patching in case some other builds are triggered
         # on the same site (tests, ci...)
