@@ -286,6 +286,7 @@ class I18n(ExtendedPlugin):
             # 2. pass the i18n_link to the worker with the init object
             # 3. assign passed i18_link to the variable
             # 4. make search_index path i18n aware
+            # 5. make additional JavaScript resources paths i18n aware
             replace_pairs = [
                 (
                     "base_path = 'function' === typeof importScripts ? '.' : '/search/';",
@@ -294,6 +295,16 @@ class I18n(ExtendedPlugin):
                 ('({init: true});', '({init: true, i18n_link: i18n_link});'),
                 ('if (e.data.init) {', 'if (e.data.init) { i18n_link = e.data.i18n_link;'),
                 ('"GET", index_path', '"GET", `../${i18n_link}search/search_index.json`'),
+                (
+                    ".push('lunr.stemmer.support.js');",
+                    ".push(`../${i18n_link}search/lunr.stemmer.support.js`);",
+                ),
+                (".push('lunr.multi.js');", ".push(`../${i18n_link}search/lunr.multi.js`);"),
+                (".push('tinyseg.js');", ".push(`../${i18n_link}search/tinyseg.js`);"),
+                (
+                    ".push(['lunr', lang[i], 'js'].join('.'));",
+                    ".push([`../${i18n_link}search/lunr`, lang[i], 'js'].join('.'));",
+                ),
             ]
 
         for old, new in replace_pairs:

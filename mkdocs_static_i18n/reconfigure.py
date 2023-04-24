@@ -207,18 +207,15 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         self, config: MkDocsConfig, search_plugin_name: str, search_plugin
     ):
         search_langs = search_plugin.config["lang"] or []
-        for language in self.build_languages:
-            if language in LUNR_LANGUAGES:
-                if language not in search_langs:
-                    search_langs.append(language)
-                    log.info(
-                        f"Adding '{language}' to the '{search_plugin_name}' plugin 'lang' option"
-                    )
-            else:
-                log.info(
-                    f"Language '{language}' is not supported by "
-                    f"lunr.js, not setting it in the 'plugins.search.lang' option"
-                )
+        language = self.current_language
+        if language in LUNR_LANGUAGES and language not in search_langs:
+            search_langs.append(language)
+            log.info(f"Adding '{language}' to the '{search_plugin_name}' plugin 'lang' option")
+        else:
+            log.info(
+                f"Language '{language}' is not supported by "
+                f"lunr.js, not setting it in the 'plugins.search.lang' option"
+            )
         if search_langs:
             search_plugin.config["lang"] = search_langs
         return config
