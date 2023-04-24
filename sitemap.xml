@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/english_default/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/english_default/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/english_default/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/english_default/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/topic1/named_file/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/topic1/named_file/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/topic1/named_file/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/topic1/named_file/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/topic2/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/topic2/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/topic2/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/topic2/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/english_default/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/english_default/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/english_default/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/english_default/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/french_only/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/french_only/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/topic1/named_file/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/topic1/named_file/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/topic1/named_file/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/topic1/named_file/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/fr/topic2/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/topic2/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/topic2/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/topic2/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/de/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/de/english_default/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/english_default/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/english_default/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/english_default/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/de/topic1/named_file/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/topic1/named_file/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/topic1/named_file/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/topic1/named_file/"/>
+    </url>
+    <url>
+        <loc>https://ultrabug.github.io/mkdocs-static-i18n/de/topic2/</loc>
+        <lastmod>2023-04-24</lastmod>
+        <changefreq>daily</changefreq>
+        <xhtml:link rel="alternate" hreflang="en" href="https://ultrabug.github.io/mkdocs-static-i18n/topic2/"/>
+        <xhtml:link rel="alternate" hreflang="fr" href="https://ultrabug.github.io/mkdocs-static-i18n/fr/topic2/"/>
+        <xhtml:link rel="alternate" hreflang="de" href="https://ultrabug.github.io/mkdocs-static-i18n/de/topic2/"/>
+    </url>
+</urlset>
