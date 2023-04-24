@@ -145,6 +145,8 @@ class I18n(ExtendedPlugin):
         # wrap the post_build event and change the site_dir path
         # it will save the search_index in the correct directory
         for i, event in enumerate(config.plugins.events["post_build"]):
+            if not hasattr(event, "__self__"):
+                continue
             if event.__self__.__class__ is search_plugin.__class__:
                 config.plugins.events["post_build"][i] = change_site_dir(event)
                 break
@@ -233,6 +235,8 @@ class I18n(ExtendedPlugin):
             # required to avoid running 2 instances of the plugin
             for event_group in internal_config.plugins.events.values():
                 for i, event in enumerate(event_group):
+                    if not hasattr(event, "__self__"):
+                        continue
                     if event.__self__.__class__ is self.__class__:
                         event_group.pop(i)
                         break
