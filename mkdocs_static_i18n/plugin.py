@@ -1,5 +1,5 @@
 import logging
-from pathlib import PurePath
+from pathlib import Path, PurePath
 from typing import Optional
 
 from jinja2.ext import loopcontrols
@@ -166,6 +166,22 @@ class I18n(ExtendedPlugin):
         return context
 
     @plugins.event_priority(-100)
+    def on_post_template(
+            self, output: str, *, template_name: str, config: MkDocsConfig
+    ) -> Optional[str]:
+
+        if template_name == 'sitemap.xml':
+            return None
+
+        # Pass the base path of the current language to JavaScript
+        # TODO extract to a function same with `on_post_page`
+        current_language = next(
+            filter(lambda l: l.locale == self.current_language, self.config.languages)
+        )
+        i18_link = current_language.link.replace("./", "")
+        return output.replace("<script", f'<script>let i18n_link = "{i18_link}";</script><script', 1)
+
+    @plugins.event_priority(-100)
     def on_page_context(self, context, page, config, nav):
         """
         Page context only applies to Page() objects.
@@ -189,7 +205,13 @@ class I18n(ExtendedPlugin):
         with_pdf_plugin = config["plugins"].get("with-pdf")
         if with_pdf_plugin:
             with_pdf_plugin.on_post_page(output, page, config)
-        return output
+
+        # Pass the base path of the current language to JavaScript
+        current_language = next(
+            filter(lambda l: l.locale == self.current_language, self.config.languages)
+        )
+        i18_link = current_language.link.replace("./", "")
+        return output.replace("<script", f'<script>let i18n_link = "{i18_link}";</script><script', 1)
 
     @plugins.event_priority(-100)
     def on_post_build(self, config):
@@ -253,6 +275,40 @@ class I18n(ExtendedPlugin):
                     f"{locale}/{with_pdf_output_path}"
                 ).as_posix()
                 with_pdf_plugin.on_post_build(internal_config)
+
+        if config.theme.name == "material":
+            # make search_index path i18n aware
+            replace_pairs = [
+                ('"search/search_index.json"', '`${i18n_link}search/search_index.json`')
+            ]
+        else:
+            # 1. create a variable to hold the i18n_link inside the worker
+            # 2. pass the i18n_link to the worker with the init object
+            # 3. assign passed i18_link to the variable
+            # 4. make search_index path i18n aware
+            replace_pairs = [
+                (
+                    "base_path = 'function' === typeof importScripts ? '.' : '/search/';",
+                    "base_path = 'function' === typeof importScripts ? '.' : '/search/'; let i18n_link;",
+                ),
+                ('({init: true});', '({init: true, i18n_link: i18n_link});'),
+                ('if (e.data.init) {', 'if (e.data.init) { i18n_link = e.data.i18n_link;'),
+                ('"GET", index_path', '"GET", `../${i18n_link}search/search_index.json`'),
+            ]
+
+        for old, new in replace_pairs:
+            for path in Path(config.site_dir).glob("**/*.js"):
+                src = path.read_text(encoding="utf-8-sig")
+                out = src.replace(old, new)
+                if src != out:
+                    path.write_text(out, encoding="utf8")
+                    log.info(f"Modified search_index JavaScript: {path}")
+                    break
+            else:
+                log.error(
+                    f"search_index JavaScript wasn't modified, theme {config.theme.name} is bad "
+                    "consider downgrading the version of the theme, because it worked before ;)"
+                )
 
         # rebuild and deduplicate the search index
         # self.reconfigure_search_index(config)
