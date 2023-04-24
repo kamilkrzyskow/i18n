@@ -119,6 +119,36 @@ class I18n(ExtendedPlugin):
         # Add extension to allow the "continue" clause in the sitemap template loops.
         env.add_extension(loopcontrols)
 
+        # find the search plugin to find out its class
+        for name, plugin in config.plugins.items():
+            if name in ["search", "material/search"]:
+                search_plugin = plugin
+                break
+        else:
+            search_plugin = None
+
+        if not search_plugin or self.current_language == self.default_language:
+            return None
+
+        def change_site_dir(func):
+            """Decorator to add a directory to the `site_dir` path"""
+
+            def wrapper(*args, **kwargs):
+                site_dir = kwargs.get("config", {}).get("site_dir")
+                if site_dir is None:
+                    return func(*args, **kwargs)
+                kwargs["config"]["site_dir"] = str(PurePath(site_dir) / self.current_language)
+                return func(*args, **kwargs)
+
+            return wrapper
+
+        # wrap the post_build event and change the site_dir path
+        # it will save the search_index in the correct directory
+        for i, event in enumerate(config.plugins.events["post_build"]):
+            if event.__self__.__class__ is search_plugin.__class__:
+                config.plugins.events["post_build"][i] = change_site_dir(event)
+                break
+
     @plugins.event_priority(-100)
     def on_template_context(self, context, template_name, config):
         """
@@ -166,7 +196,7 @@ class I18n(ExtendedPlugin):
         """
 
         # memorize locale search entries
-        self.extend_search_entries(config)
+        # self.extend_search_entries(config)
 
         if self.building:
             return
@@ -202,9 +232,9 @@ class I18n(ExtendedPlugin):
             # remove the initially created I18n events
             # required to avoid running 2 instances of the plugin
             for event_group in internal_config.plugins.events.values():
-                for event in event_group:
+                for i, event in enumerate(event_group):
                     if event.__self__.__class__ is self.__class__:
-                        event_group.remove(event)
+                        event_group.pop(i)
                         break
 
             # reassign the plugin, the events will be registered again
