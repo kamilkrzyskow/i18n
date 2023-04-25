@@ -251,7 +251,7 @@ class I18n(ExtendedPlugin):
 
             # TODO: reconfigure config here? skip on_config?
             # create a new internal config for additional languages
-            internal_config = load_config(config.config_file_path)
+            internal_config = load_config(config.config_file_path, site_dir=config.site_dir)
 
             # remove the initially created I18n events
             # required to avoid running 2 instances of the plugin
