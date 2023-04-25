@@ -95,6 +95,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         # MkDocs themes specific reconfiguration
         if config.theme.name in MKDOCS_THEMES:
             self.reconfigure_mkdocs_theme(config, self.current_language)
+            if self.current_language != self.default_language:
+                for template in list(config.theme.static_templates):
+                    if template != "sitemap.xml":
+                        config.theme.static_templates.remove(template)
 
         # material theme specific reconfiguration (can be disabled)
         if config.theme.name == "material" and self.config["reconfigure_material"] is True:
