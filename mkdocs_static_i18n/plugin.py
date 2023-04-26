@@ -381,7 +381,9 @@ class I18n(BasePlugin):
     def _maybe_translate_titles(self, language, items):
         translated = False
         translated_nav = self.config["nav_translations"].get(language, {})
-        default_translation = self.config["nav_translations"].get(self.default_language, {})
+        default_translation = self.config["nav_translations"].get(
+            self.default_language, {}
+        )
         if default_translation:
             for k, v in default_translation.items():
                 if k not in translated_nav:
@@ -494,10 +496,9 @@ class I18n(BasePlugin):
         discovered and we just have to translate if it needed.
         """
         page.locale = page.file.dest_language or self.default_language
-        if (
-            self.config["nav_translations"].get(page.locale, {})
-            or self.config["nav_translations"].get(self.default_language, {})
-        ):
+        if self.config["nav_translations"].get(page.locale, {}) or self.config[
+            "nav_translations"
+        ].get(self.default_language, {}):
             self._maybe_translate_titles(page.locale, [page])
         return markdown
 
@@ -646,7 +647,9 @@ class I18n(BasePlugin):
             except (ImportError, ModuleNotFoundError):
                 log.warning("redirects plugin could not be imported")
             else:
-                self._recreate_redirects(config=config, plugin=redirects_plugin, module=module)
+                self._recreate_redirects(
+                    config=config, plugin=redirects_plugin, module=module
+                )
 
     def _recreate_redirects(self, *, config, module, plugin):
         """
@@ -661,14 +664,17 @@ class I18n(BasePlugin):
 
         redirects = plugin.redirects
         # Determine if 'use_directory_urls' is set
-        use_directory_urls = config.get('use_directory_urls')
+        use_directory_urls = config.get("use_directory_urls")
 
-        for lang in filter(lambda l: l["build"], self.config["languages"].values()):
-
+        for lang in filter(
+            lambda language: language["build"], self.config["languages"].values()
+        ):
             # Walk through the redirect map and write their HTML files
             for page_old, page_new in redirects.items():
                 # Need to remove hash fragment from new page to verify existence
-                page_new_without_hash, hash_part = module._split_hash_fragment(str(page_new))
+                page_new_without_hash, hash_part = module._split_hash_fragment(
+                    str(page_new)
+                )
                 page_old_i18n = lang["link"] + page_old
 
                 # External redirect targets are easy, just use it as the target path
@@ -678,7 +684,9 @@ class I18n(BasePlugin):
                 elif page_new_without_hash in plugin.doc_pages:
                     file = plugin.doc_pages[page_new_without_hash]
                     page_new_i18n = lang["link"] + file.url + hash_part
-                    dest_path = module.get_relative_html_path(page_old_i18n, page_new_i18n, use_directory_urls)
+                    dest_path = module.get_relative_html_path(
+                        page_old_i18n, page_new_i18n, use_directory_urls
+                    )
 
                 # If the redirect target isn't external or a valid internal page, throw an error
                 # Note: we use 'warn' here specifically; mkdocs treats warnings specially when in strict mode
@@ -688,7 +696,7 @@ class I18n(BasePlugin):
 
                 # DO IT!
                 module.write_html(
-                    config['site_dir'],
+                    config["site_dir"],
                     module.get_html_path(page_old_i18n, use_directory_urls),
                     dest_path,
                 )
