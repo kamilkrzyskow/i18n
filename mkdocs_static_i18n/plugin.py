@@ -136,10 +136,14 @@ class I18n(BasePlugin):
         """
         Configure languages options for the 'default' language
         """
-        # Set the 'site_name' for all configured languages
+        # Set the 'site_name' and 'site_description' for all configured languages
         for language, lang_config in self.config["languages"].items():
             localized_site_name = lang_config["site_name"] or config["site_name"]
+            localized_site_desc = (
+                lang_config["site_description"] or config["site_description"]
+            )
             self.config["languages"][language]["site_name"] = localized_site_name
+            self.config["languages"][language]["site_description"] = localized_site_desc
         # the default_language options can be made available for the
         # 'default' / version of the website
         self.default_language_options = self.config["languages"].pop(
@@ -150,6 +154,7 @@ class I18n(BasePlugin):
                 "fixed_link": None,
                 "build": True,
                 "site_name": config["site_name"],
+                "site_description": config["site_description"],
             },
         )
         if self.default_language_options["name"] == "default":
@@ -161,6 +166,11 @@ class I18n(BasePlugin):
             )
             self.default_language_options["site_name"] = default_language_config.get(
                 "site_name", config["site_name"]
+            )
+            self.default_language_options[
+                "site_description"
+            ] = default_language_config.get(
+                "site_description", config["site_description"]
             )
             self.default_language_options["fixed_link"] = default_language_config.get(
                 "fixed_link", None
@@ -180,6 +190,7 @@ class I18n(BasePlugin):
                 "fixed_link": None,
                 "build": build,
                 "site_name": config["site_name"],
+                "site_description": config["site_description"],
             }
 
     @plugins.event_priority(-100)
@@ -523,17 +534,24 @@ class I18n(BasePlugin):
                     alternate["link"] += page_url
             config["extra"]["alternate"] = alternates
 
-        # set the localized site_name if any
+        # set the localized site_name and site_description if any
         if page.file.dest_language == "":
             # default
             localized_site_name = self.default_language_options["site_name"]
+            localized_site_desc = self.default_language_options["site_description"]
         else:
             localized_site_name = (
                 self.config["languages"]
                 .get(context["i18n_page_locale"], {})
                 .get("site_name", config["site_name"])
             )
+            localized_site_desc = (
+                self.config["languages"]
+                .get(context["i18n_page_locale"], {})
+                .get("site_description", config["site_description"])
+            )
         config["site_name"] = localized_site_name
+        config["site_description"] = localized_site_desc
 
         return context
 
