@@ -23,6 +23,7 @@ def test_plugin_languages_backward_compat_1():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
         "fr": {
             "name": "français",
@@ -30,6 +31,7 @@ def test_plugin_languages_backward_compat_1():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -51,6 +53,7 @@ def test_plugin_languages_backward_compat_2():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -72,6 +75,7 @@ def test_plugin_languages_backward_compat_3():
             "fixed_link": None,
             "build": False,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
         "fr": {
             "name": "français",
@@ -79,6 +83,7 @@ def test_plugin_languages_backward_compat_3():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -105,6 +110,7 @@ def test_plugin_languages_backward_compat_4():
             "fixed_link": None,
             "build": False,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
         "fr": {
             "name": "français",
@@ -112,6 +118,7 @@ def test_plugin_languages_backward_compat_4():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -132,6 +139,7 @@ def test_plugin_languages_backward_compat_5():
                         "name": "english",
                         "build": True,
                         "site_name": "English site name",
+                        "site_description": "English site description",
                     },
                 },
             }
@@ -146,6 +154,7 @@ def test_plugin_languages_backward_compat_5():
             "fixed_link": None,
             "build": True,
             "site_name": "English site name",
+            "site_description": "English site description",
         },
         "fr": {
             "name": "français",
@@ -153,6 +162,7 @@ def test_plugin_languages_backward_compat_5():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -173,6 +183,7 @@ def test_plugin_languages_backward_compat_6():
                         "name": "english",
                         "build": False,
                         "site_name": "MkDocs static i18n plugin tests",
+                        "site_description": "MkDocs static i18n plugin is being refactored",
                     },
                 },
             }
@@ -187,6 +198,7 @@ def test_plugin_languages_backward_compat_6():
             "fixed_link": None,
             "build": False,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
         "fr": {
             "name": "français",
@@ -194,6 +206,7 @@ def test_plugin_languages_backward_compat_6():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -220,6 +233,7 @@ def test_plugin_languages_backward_compat_7():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
         "fr": {
             "name": "français",
@@ -227,6 +241,7 @@ def test_plugin_languages_backward_compat_7():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -257,6 +272,7 @@ def test_plugin_languages_backward_compat_8():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
         "fr": {
             "name": "français",
@@ -264,6 +280,7 @@ def test_plugin_languages_backward_compat_8():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -294,6 +311,7 @@ def test_plugin_languages_backward_compat_9():
             "fixed_link": None,
             "build": False,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
         "fr": {
             "name": "français",
@@ -301,6 +319,7 @@ def test_plugin_languages_backward_compat_9():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -330,6 +349,7 @@ def test_plugin_languages_backward_compat_10():
             "fixed_link": None,
             "build": False,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
         "fr": {
             "name": "français",
@@ -337,6 +357,7 @@ def test_plugin_languages_backward_compat_10():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -366,6 +387,7 @@ def test_plugin_languages_backward_compat_11():
             "fixed_link": None,
             "build": False,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
         "fr": {
             "name": "français",
@@ -373,6 +395,7 @@ def test_plugin_languages_backward_compat_11():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -401,6 +424,7 @@ def test_plugin_languages_backward_compat_12():
             "fixed_link": None,
             "build": True,
             "site_name": "MkDocs static i18n plugin tests",
+            "site_description": "MkDocs static i18n plugin is being refactored",
         },
     }
 
@@ -419,11 +443,16 @@ def test_plugin_languages_backward_compat_13():
                         "name": "english_default",
                         "site_name": "Default site name",
                     },
-                    "fr": {"name": "français", "site_name": "Site en Français"},
+                    "fr": {
+                        "name": "français",
+                        "site_name": "Site en Français",
+                        "site_description": "Description en Français",
+                    },
                     "en": {
                         "name": "english",
                         "build": True,
                         "site_name": "English site name",
+                        "site_description": "English site name",
                     },
                 },
             }
@@ -439,6 +468,7 @@ def test_plugin_languages_backward_compat_13():
             "fixed_link": None,
             "build": True,
             "site_name": "English site name",
+            "site_description": "English site name",
         },
         "fr": {
             "name": "français",
@@ -446,5 +476,6 @@ def test_plugin_languages_backward_compat_13():
             "fixed_link": None,
             "build": True,
             "site_name": "Site en Français",
+            "site_description": "Description en Français",
         },
     }
