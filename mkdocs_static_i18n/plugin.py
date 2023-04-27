@@ -581,11 +581,56 @@ class I18n(BasePlugin):
         dirty = False
         minify_plugin = config["plugins"].get("minify")
         search_plugin = utils.get_plugin("search", config)
+        social_plugin = utils.get_plugin("social", config)
         with_pdf_plugin = config["plugins"].get("with-pdf")
         redirects_plugin = config["plugins"].get("redirects")
         if with_pdf_plugin:
             with_pdf_plugin.on_post_build(config)
             with_pdf_output_path = with_pdf_plugin.config["output_path"]
+        if social_plugin:
+
+            def modify_page_objects(func):
+                """
+                The social plugin uses the page.file.src_path and page.file.src_uri
+                to generate both the card image filename and html meta tag url to that file.
+                This decorator modifies the page objects to assure i18n card creation and avoid
+                overwriting the default language cards, when another language page isn't translated.
+                """
+
+                def wrap_on_page_markdown(*args, **kwargs):
+                    page = kwargs.get("page")
+                    src_path = Path(page.file.src_path)
+                    src_uri = Path(page.file.src_uri)
+                    if len(src_path.suffixes) == 1 and len(src_uri.suffixes) == 1:
+                        page.file.src_path = str(
+                            src_path.parent
+                            / f"{src_path.stem}.{page.locale}{src_path.suffix}"
+                        )
+                        page.file.src_uri = (
+                            src_uri.parent
+                            / f"{src_uri.stem}.{page.locale}{src_uri.suffix}"
+                        ).as_posix()
+                    # replace the page object and run the function / method
+                    kwargs["page"] = page
+                    output = func(*args, **kwargs)
+
+                    # restore the page object to the initial state
+                    page.file.src_path = str(src_path)
+                    page.file.src_uri = src_uri.as_posix()
+                    kwargs["page"] = page
+                    return output
+
+                return wrap_on_page_markdown
+
+            for i, event in enumerate(config.plugins.events["page_markdown"]):
+                if not hasattr(event, "__self__"):
+                    continue
+                if event.__self__.__class__ is social_plugin.__class__:
+                    config.plugins.events["page_markdown"][i] = modify_page_objects(
+                        event
+                    )
+                    break
+
         for language, language_config in self.config["languages"].items():
             # Language build disabled by the user, skip
             if language_config["build"] is False:
@@ -598,6 +643,11 @@ class I18n(BasePlugin):
             env = self.i18n_configs[language]["env"]
             files = self.i18n_files[language]
             nav = self.i18n_navs[language]
+
+            # Override site_name and site_description etc., which are applicable
+            for k, v in language_config.items():
+                if v and k in config:
+                    config[k] = v
 
             # Support mkdocs-material theme language
             if config["theme"].name == "material":
@@ -614,6 +664,10 @@ class I18n(BasePlugin):
             if minify_plugin:
                 minify_plugin.on_pre_build(config=config)
 
+            # Support material theme social plugin
+            if social_plugin and hasattr(social_plugin, "_image_promises"):
+                social_plugin._image_promises.clear()
+
             # Include theme specific files
             files.add_files_from_theme(env, config)
 
@@ -621,10 +675,15 @@ class I18n(BasePlugin):
             files.copy_static_files(dirty=dirty)
 
             for file in files.documentation_pages():
+                # pass the current locale, needed for social cards naming
+                file.page.locale = language
                 _populate_page(file.page, config, files, dirty)
 
             for file in files.documentation_pages():
                 _build_page(file.page, config, files, nav, env, dirty)
+
+            if social_plugin:
+                social_plugin.on_post_build(config=config)
 
             if with_pdf_plugin:
                 with_pdf_plugin.config[
