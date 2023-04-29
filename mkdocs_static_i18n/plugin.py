@@ -200,6 +200,9 @@ class I18n(BasePlugin):
         """
         self.default_language = self.config["default_language"]
         self._set_languages_options(config)
+        # Assure sync with config and default_language_options
+        config["site_name"] = self.default_language_options["site_name"]
+        config["site_description"] = self.default_language_options["site_description"]
         # Make an order preserving list of all the configured languages
         self.all_languages = []
         for language in self.config["languages"]:
@@ -230,6 +233,12 @@ class I18n(BasePlugin):
         for language in self.all_languages:
             self.i18n_configs[language] = deepcopy(config)
             self.i18n_configs[language]["plugins"] = plugins
+            self.i18n_configs[language]["site_name"] = self.config["languages"][
+                language
+            ]["site_name"]
+            self.i18n_configs[language]["site_description"] = self.config["languages"][
+                language
+            ]["site_description"]
             if hooks:
                 self.i18n_configs[language]["hooks"] = hooks
         config["plugins"] = plugins
@@ -535,25 +544,6 @@ class I18n(BasePlugin):
                     alternate["link"] += page_url
             config["extra"]["alternate"] = alternates
 
-        # set the localized site_name and site_description if any
-        if page.file.dest_language == "":
-            # default
-            localized_site_name = self.default_language_options["site_name"]
-            localized_site_desc = self.default_language_options["site_description"]
-        else:
-            localized_site_name = (
-                self.config["languages"]
-                .get(context["i18n_page_locale"], {})
-                .get("site_name", config["site_name"])
-            )
-            localized_site_desc = (
-                self.config["languages"]
-                .get(context["i18n_page_locale"], {})
-                .get("site_description", config["site_description"])
-            )
-        config["site_name"] = localized_site_name
-        config["site_description"] = localized_site_desc
-
         return context
 
     @plugins.event_priority(-100)
@@ -643,11 +633,6 @@ class I18n(BasePlugin):
             env = self.i18n_configs[language]["env"]
             files = self.i18n_files[language]
             nav = self.i18n_navs[language]
-
-            # Override site_name and site_description etc., which are applicable
-            for k, v in language_config.items():
-                if v and k in config:
-                    config[k] = v
 
             # Support mkdocs-material theme language
             if config["theme"].name == "material":
