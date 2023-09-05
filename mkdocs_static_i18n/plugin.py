@@ -167,6 +167,10 @@ class I18n(ExtendedPlugin):
 
         self.building = True
 
+        # reconfigure material social cards plugin
+        if self.config.reconfigure_material and "material/social" in config.plugins:
+            self.reconfigure_material_social(config)
+
         # Block time logging for internal builds and filter reduntant MkDocs log
         build_logger = logging.getLogger("mkdocs.commands.build")
         i18n_filter = i18nLoggingFilter()

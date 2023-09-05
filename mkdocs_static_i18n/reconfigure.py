@@ -714,6 +714,53 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
         #             f"    {build_lang=} {alternate_file.src_uri=} {alternate_file.locale_alternate_of=} {alternate_file.dest_uri=}"
         #         )
 
+    def reconfigure_material_social(self, config: MkDocsConfig):
+        """
+        The social plugin uses the page.file.src_path and page.file.src_uri
+        to generate both the card image filename and html meta tag url to that file.
+        To avoid overwriting the default language cards, when another language page
+        isn't translated it's required to wrap the plugin's on_page_markdown event
+        and provide the page object with replaced values
+
+        TODO The Insiders Social Plugin could behave differently, and the wrapper might not work
+        """
+
+        social_plugin = config.plugins["material/social"]
+
+        def on_page_markdown_decorator(func):
+            def on_page_markdown_wrapper(markdown, page, config, files):
+                src_path = Path(page.file.src_path)
+
+                # if the source path has multiple suffixes it won't override the default language
+                if len(src_path.suffixes) > 1:
+                    return func(markdown, page, config, files)
+
+                src_uri = Path(page.file.src_uri)
+
+                page.file.src_path = str(
+                    src_path.parent / f"{src_path.stem}.{self.current_language}{src_path.suffix}"
+                )
+                page.file.src_uri = (
+                    src_uri.parent / f"{src_uri.stem}.{self.current_language}{src_uri.suffix}"
+                ).as_posix()
+
+                output = func(markdown, page, config, files)
+
+                # restore the page object paths to initial state
+                page.file.src_path = str(src_path)
+                page.file.src_uri = src_uri.as_posix()
+
+                return output
+
+            return on_page_markdown_wrapper
+
+        for i, event in enumerate(config.plugins.events["page_markdown"]):
+            if not hasattr(event, "__self__"):
+                continue
+            if event.__self__.__class__ is social_plugin.__class__:
+                config.plugins.events["page_markdown"][i] = on_page_markdown_decorator(event)
+                break
+
     def reconfigure_material_blog(self, nav: Navigation, mkdocs_config: MkDocsConfig, files: Files):
         """
         Since the material/blog plugin does modify the files structure and the navigation
