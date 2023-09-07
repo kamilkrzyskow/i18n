@@ -66,6 +66,12 @@ class I18nPluginLanguage(Config):
         return failed, warnings
 
 
+class I18nRedirectsOptions(Config):
+    """ """
+
+    create_alternate_redirects = config_options.Type(bool, default=True)
+
+
 class I18nPluginConfig(Config):
     """ """
 
@@ -74,6 +80,7 @@ class I18nPluginConfig(Config):
     fallback_to_default = config_options.Type(bool, default=True)
     reconfigure_material = config_options.Type(bool, default=True)
     reconfigure_search = config_options.Type(bool, default=True)
+    reconfigure_redirects_options = config_options.SubConfig(I18nRedirectsOptions)
     languages = config_options.ListOfItems(
         config_options.SubConfig(I18nPluginLanguage, validate=True)
     )

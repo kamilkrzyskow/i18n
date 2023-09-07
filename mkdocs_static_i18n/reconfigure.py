@@ -160,6 +160,8 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     config = self.reconfigure_search_plugin(config, name, plugin)
             if name == "with-pdf":
                 config = self.reconfigure_with_pdf_plugin(config)
+            if name == "redirects":
+                self.reconfigure_redirects(plugin)
 
         # apply localized user config overrides
         config = self.apply_user_overrides(config)
@@ -391,6 +393,40 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
                     # partials don't have a module
                     pass
         return config
+
+    def reconfigure_redirects(self, plugin):
+        # nothing to do
+        if not self.config.reconfigure_redirects_options.create_alternate_redirects:
+            return
+
+        if "redirect_maps" not in plugin.config or not plugin.config["redirect_maps"]:
+            return
+
+        import mkdocs_redirects.plugin as module
+
+        # clear the redirects_maps in the alternate builds,
+        # because everything is created in the default build
+        if not self.is_default_language_build:
+            plugin.config["redirect_maps"].clear()
+            return
+
+        # assert API is available to change
+        if not hasattr(module, "write_html"):
+            log.warning("current version of mkdocs-redirects plugin isn't compatible with i18n")
+            return
+
+        def write_html_decorator(func):
+            def write_html_wrapper(site_dir, old_path, new_path):
+                # write html for default build
+                func(site_dir, old_path, new_path)
+                # write html for each built alternate
+                for lang in self.config.languages:
+                    if lang.build is True:
+                        func(site_dir, lang.link[1:] + old_path, new_path)
+
+            return write_html_wrapper
+
+        module.write_html = write_html_decorator(module.write_html)
 
     def reconfigure_navigation(
         self,
