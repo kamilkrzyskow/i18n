@@ -86,6 +86,18 @@ class I18n(ExtendedPlugin):
                 f"/{self.current_language}/{homepage_suffix}",
             ]
 
+        # TODO Perhaps allow the user to control this in config
+        default_translations = (
+            self.get_language_config(self.default_language).nav_translations or {}
+        )
+        if self.is_default_language_build:
+            NavHelper.nav_translations = default_translations
+        else:
+            # keep using the default translations for alternates, consider them global
+            # override the defaults with any matching localized translation
+            current_translations = self.current_language_config.nav_translations or {}
+            NavHelper.nav_translations = {**default_translations, **current_translations}
+
         i18n_nav = self.reconfigure_navigation(nav, config, files, NavHelper)
         i18n_nav.homepage = NavHelper.homepage
 

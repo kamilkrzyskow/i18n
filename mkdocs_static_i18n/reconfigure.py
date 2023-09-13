@@ -440,12 +440,10 @@ class ExtendedPlugin(BasePlugin[I18nPluginConfig]):
 
         Localize the default homepage button.
         """
-        # nav_translations
-        nav_translations = self.current_language_config.nav_translations or {}
 
         for item in nav:
-            if hasattr(item, "title") and item.title in nav_translations:
-                item.title = nav_translations[item.title]
+            if hasattr(item, "title") and item.title in nav_helper.nav_translations:
+                item.title = nav_helper.nav_translations[item.title]
                 nav_helper.translated_items += 1
 
             # is that the localized content homepage?
